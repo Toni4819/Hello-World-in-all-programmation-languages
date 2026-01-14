@@ -49,20 +49,23 @@ function createCard(name, code, lang) {
   card.className = "card";
   card.dataset.lang = lang;
 
-  const highlighted = Prism.highlight(
-    code,
-    Prism.languages[lang] || Prism.languages.markup,
-    lang
-  );
+  const grammar = Prism.languages[lang] || Prism.languages.javascript;
+  const highlighted = Prism.highlight(code, grammar, lang);
 
   card.innerHTML = `
-    <h3>${name}</h3>
-    <button class="copy-btn">Copy</button>
+    <div class="card-header">
+      <h3>${name}</h3>
+      <button class="copy-btn">📋 Copy</button>
+    </div>
     <pre><code class="language-${lang}">${highlighted}</code></pre>
   `;
 
   card.querySelector(".copy-btn").addEventListener("click", () => {
     navigator.clipboard.writeText(code);
+    card.querySelector(".copy-btn").textContent = "✅ Copied!";
+    setTimeout(() => {
+      card.querySelector(".copy-btn").textContent = "📋 Copy";
+    }, 1500);
   });
 
   cardsContainer.appendChild(card);
